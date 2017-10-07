@@ -1,0 +1,34 @@
+﻿@{
+    string controller = ViewContext.RouteData.Values["Controller"].ToString();
+    string action = ViewContext.RouteData.Values["Action"].ToString();
+}
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("WorkMate", "Index", "Home", null, new { @class = "navbar-brand" })
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="@(controller == "Home" && action == "Index" ? "active" : "")">@Html.ActionLink("Home", "Index", "Home")</li>
+                @if (Request.IsAuthenticated)
+                {
+                    <li class="@(controller == "Jobs" && action == "Index" ? "active" : "")">@Html.ActionLink("Jobs", "Index", "Jobs")</li>
+                    <li class="@(controller == "Schedule" && action == "Index" ? "active" : "")">@Html.ActionLink("Schedule", "Index", "Schedule")</li>
+                    <li class="@(controller == "Paychecks" && action == "Index" ? "active" : "")">@Html.ActionLink("Paychecks", "Index", "Paychecks")</li>
+                }
+                <li class="@(controller == "Home" && action == "About" ? "active" : "")">@Html.ActionLink("About", "About", "Home")</li>
+                <li class="@(controller == "Home" && action == "Contact" ? "active" : "")">@Html.ActionLink("Contact", "Contact", "Home")</li>
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>

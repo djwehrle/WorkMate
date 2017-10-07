@@ -1,0 +1,31 @@
+﻿@model WorkMate.ViewModels.ScheduleFormViewModel
+
+@{
+    ViewBag.Title = "Add Work";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <h2>Add Work</h2>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        @using (Html.BeginForm("New", "Schedule", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <div class="form-group pull-right">
+                <button type="submit" class="btn btn-primary">Add</button>
+                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+            </div>
+
+            @Html.Partial("_ScheduleForm")
+        }
+    </div>
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,59 @@
+﻿@model WorkMate.Models.Job
+
+@Html.AntiForgeryToken()
+
+@Html.ValidationSummary(null, new { @class = "text-danger" })
+
+<div class="form-group">
+    <div class="col-md-10">
+        @Html.HiddenFor(m => m.ID, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        <p class="help-block">This is what will show on your schedule.</p>
+        @Html.ValidationMessageFor(m => m.Name)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Company, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Company, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Company)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Position, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Position, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Position)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.JobType, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.EnumDropDownListFor(m => m.JobType, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.JobType)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.PayRate, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        <div class="input-group">
+            <span class="input-group-addon">$</span>
+            @Html.TextBoxFor(m => m.PayRate, new { @class = "form-control" })
+        </div>
+        @Html.ValidationMessageFor(m => m.PayRate)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.PaymentSchedule, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.EnumDropDownListFor(m => m.PaymentSchedule, new { @class = "form-control" })
+        <p class="help-block">Get paid February 1st for the work you did in January.</p>
+        @Html.ValidationMessageFor(m => m.PaymentSchedule)
+    </div>
+</div>

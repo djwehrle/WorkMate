@@ -1,0 +1,37 @@
+﻿@model WorkMate.ViewModels.ScheduleFormViewModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary("", new { @class = "text-danger" })
+<div class="form-group">
+    <div class="col-md-10">
+        @Html.HiddenFor(m => m.Schedule.ID, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Schedule.JobID, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.Schedule.JobID, new SelectList(Model.Jobs, "ID", "Name"), "Select Job", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Schedule.JobID)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Date, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Date, new { @class = "form-control", type = "date" })
+        @Html.ValidationMessageFor(m => m.Date)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.StartTime, new { @class = "col-md-2 control-label " })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.StartTime, new { @class = "form-control", type = "time" })
+        @Html.ValidationMessageFor(m => m.StartTime)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.EndTime, new { @class = "col-md-2 control-label " })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.EndTime, new { @class = "form-control", type = "time" })
+        @Html.ValidationMessageFor(m => m.EndTime)
+    </div>
+</div>

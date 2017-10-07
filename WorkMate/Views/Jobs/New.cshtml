@@ -1,0 +1,32 @@
+﻿@model WorkMate.Models.Job
+
+@{
+    ViewBag.Title = "New Job";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <h2>Add New Job</h2>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        @using (Html.BeginForm("New", "Jobs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <div class="form-group pull-right">
+                <button type="submit" class="btn btn-primary">Add</button>
+                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+            </div>
+
+            @Html.Partial("_JobForm")
+        }
+    </div>
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/Jobs/jobs-form.js")
+}

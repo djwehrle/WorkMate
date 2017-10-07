@@ -1,0 +1,82 @@
+﻿@using WorkMate.Models
+
+@model WorkMate.ViewModels.PaycheckViewModel
+
+@{
+    ViewBag.Title = "Paycheck";
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/Paychecks/paycheck.css")
+}
+
+<div class="container">
+    @Html.ActionLink("Back", "Index", null, new { @class = "btn btn-default pull-right" })
+    
+    <h2>Paycheck</h2>
+    <h3>Review your paycheck.</h3>
+    <small>*Note: These numbers are only intended to be used as estimates. Always consult a professional for more accuracy.</small>
+
+    <div id="paycheckForm" class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(m => m.PayDate, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PayDate, new { @class = "form-control", type = "date", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Paycheck.Job.Name, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Paycheck.Job.Name, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.StartDate, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.StartDate, new { @class = "form-control", type = "date", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.EndDate, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", type = "date", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Paycheck.NetPay, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <div class="input-group">
+                    <span class="input-group-addon">$</span>
+                    @Html.TextBoxFor(m => m.Paycheck.NetPay, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Pay Type</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Hours</th>
+                <th>Pay Rate</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (PaycheckDetail PaycheckDetail in Model.Paycheck.PaycheckDetails)
+            {
+                <tr>
+                    <td>@PaycheckDetail.PayType.ToString()</td>
+                    <td>@PaycheckDetail.Schedule.StartTime</td>
+                    <td>@PaycheckDetail.Schedule.EndTime</td>
+                    <td>@PaycheckDetail.Hours.ToString("N2")</td>
+                    <td>$@PaycheckDetail.PayRate.ToString("N2")</td>
+                    <td>$@PaycheckDetail.Amount.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Paychecks";
+}
+
+@section styles
+{
+    @Styles.Render("~/bundles/content/dataTables")
+}
+
+<div class="container">
+    <button id="refresh" class="btn btn-primary pull-right" type="button">Refresh</button>
+    
+    <h2>Paychecks</h2>
+    <h3>Get paid, mate!</h3>
+    <small>*Note: These numbers are only intended to be used as estimates. Always consult a professional for more accuracy.</small>
+
+    <div id="msgbox" class="alert col-md-offset-4 col-md-4">
+        <p></p>
+    </div>
+
+    <table id="paychecks" class="table table-bordered table-hover table-striped pointer">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Pay Date</th>
+                <th>Job</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Net Pay</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/scripts/dataTables")
+    @Scripts.Render("~/Scripts/Paychecks/index.js")
+}

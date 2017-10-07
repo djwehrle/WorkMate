@@ -1,0 +1,32 @@
+﻿@model WorkMate.Models.Job
+
+@{
+    ViewBag.Title = "Edit Job";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <h2>Edit Job</h2>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        @using (Html.BeginForm("Edit", "Jobs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <div class="form-group pull-right">
+                <button type="submit" class="btn btn-primary">Save</button>
+                @Html.ActionLink("Cancel", "Index", "Jobs", null, new { @class = "btn btn-default" })
+                <button type="button" class="btn btn-danger js-delete" data-job-id="@Model.ID">Delete</button>
+            </div>
+
+            @Html.Partial("_JobForm")
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/scripts/jqueryval")
+    @Scripts.Render("~/Scripts/Jobs/jobs-form.js")
+}

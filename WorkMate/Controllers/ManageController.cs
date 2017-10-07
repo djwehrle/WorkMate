@@ -3,10 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+
 using WorkMate.Models;
+using WorkMate.ViewModels;
 
 namespace WorkMate.Controllers
 {
@@ -64,13 +67,17 @@ namespace WorkMate.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
+            User currentUser = UserManager.FindById(userId);
+
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
+                FirstName = currentUser.FirstName,
+                LastName = currentUser.LastName
             };
             return View(model);
         }
