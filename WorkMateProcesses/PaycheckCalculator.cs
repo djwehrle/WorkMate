@@ -1,30 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-
 using WorkMate.Models;
 
 namespace WorkMate.Processes
 {
     public class PaycheckCalculator
     {
-        public PaycheckCalculator(PayDate payDate)
+        public PaycheckCalculator(WorkMateDbContext dbWorkMate, PayDate payDate)
         {
-            PayDate = payDate;
+            if (dbWorkMate == null)
+            {
+                throw new ArgumentNullException("dbWorkMate");
+            }
+
+            this.dbWorkMate = dbWorkMate;
+            this.payDate = payDate;
         }
 
         public void CalculatePaycheck()
         {
             // Clear out any existing paychecks that should be recalculated
-            db.Paychecks.RemoveRange(db.Paychecks.Where(p => p.PayDateID == PayDate.ID));
-            db.SaveChanges();
+            dbWorkMate.Paychecks.RemoveRange(dbWorkMate.Paychecks.Where(p => p.PayDateID == payDate.ID));
+            dbWorkMate.SaveChanges();
 
-            NewPaychecks = new List<Paycheck>();
+            newPaychecks = new List<Paycheck>();
 
             CalculatePaycheckFirstOfMonth();
 
-            db.Paychecks.AddRange(NewPaychecks);
-            db.SaveChanges();
+            dbWorkMate.Paychecks.AddRange(newPaychecks);
+            dbWorkMate.SaveChanges();
         }
 
         private void CalculatePaycheckFirstOfMonth()
@@ -32,12 +38,12 @@ namespace WorkMate.Processes
             // 1) Get all work between start and end date
             // 2) Calculate pay based on hours and pay
 
-            List<Schedule> schedules = db.Schedules
+            List<Schedule> schedules = dbWorkMate.Schedules
                 .Include(s => s.Job)
                 .Where(s =>
                         s.Job.PaymentSchedule == PaymentSchedule.FirstOfMonth
-                        && s.StartTime >= PayDate.StartDate
-                        && s.StartTime <= PayDate.EndDate)
+                        && s.StartTime >= payDate.StartDate
+                        && s.StartTime <= payDate.EndDate)
                 .ToList();
 
             foreach(Schedule schedule in schedules)
@@ -47,19 +53,19 @@ namespace WorkMate.Processes
                 // e.g. the hours worked at one job during one day at Overtime pay
 
                 // Create a Paycheck if one doesn't already exist for this job and pay date
-                Paycheck newPaycheck = NewPaychecks.SingleOrDefault(p => p.JobID == schedule.JobID && p.PayDateID == PayDate.ID);
+                Paycheck newPaycheck = newPaychecks.SingleOrDefault(p => p.JobID == schedule.JobID && p.PayDateID == payDate.ID);
 
                 if (newPaycheck == null)
                 {
                     newPaycheck = new Paycheck()
                     {
                         JobID = schedule.JobID,
-                        PayDateID = PayDate.ID,
+                        PayDateID = payDate.ID,
                         NetPay = 0m,
                         UserID = schedule.UserID
                     };
 
-                    NewPaychecks.Add(newPaycheck);
+                    newPaychecks.Add(newPaycheck);
                 }
 
                 PaycheckDetail newPaycheckDetail = new PaycheckDetail()
@@ -76,8 +82,8 @@ namespace WorkMate.Processes
             }
         }
 
-        private WorkMateDbContext db = new WorkMateDbContext();
-        private List<Paycheck> NewPaychecks { get; set; }
-        private PayDate PayDate { get; set; }
+        private WorkMateDbContext dbWorkMate;
+        private List<Paycheck> newPaychecks;
+        private PayDate payDate;
     }
 }

@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-
+﻿using System.Web.Http;
 using Microsoft.AspNet.Identity;
-
 using WorkMate.Models;
 
 namespace WorkMate.Controllers.API
 {
-    public class ScheduleController : ApiController
+    [RoutePrefix("api/Schedule")]
+    public class ScheduleController : BaseAPIController
     {
-        // DELETE: api/schedule/{id}
+        public ScheduleController(WorkMateDbContext dbWorkMate)
+            : base(dbWorkMate)
+        {
+        }
+
+        [Route("{id}")]
         [HttpDelete]
         public IHttpActionResult Delete(int id)
         {
             try
             {
-                Schedule schedule = db.Schedules.Find(id);
+                Schedule schedule = dbWorkMate.Schedules.Find(id);
 
                 if (schedule == null)
                 {
@@ -31,8 +30,8 @@ namespace WorkMate.Controllers.API
                 }
                 else
                 {
-                    db.Schedules.Remove(schedule);
-                    db.SaveChanges();
+                    dbWorkMate.Schedules.Remove(schedule);
+                    dbWorkMate.SaveChanges();
 
                     return Ok();
                 }
@@ -42,7 +41,5 @@ namespace WorkMate.Controllers.API
                 return InternalServerError();
             }
         }
-
-        private WorkMateDbContext db = new WorkMateDbContext();
     }
 }

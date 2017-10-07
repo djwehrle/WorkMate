@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-
 using Microsoft.AspNet.Identity;
 using WorkMate.Models;
 using WorkMate.ViewModels;
 
 namespace WorkMate.Controllers
 {
+    [RoutePrefix("Schedule")]
     [Authorize]
-    public class ScheduleController : Controller
+    public class ScheduleController : BaseController
     {
-        // GET: Schedule
+        public ScheduleController(WorkMateDbContext dbWorkMate)
+            : base(dbWorkMate)
+        {
+        }
+
+        [Route]
         [HttpGet]
         public ViewResult Index()
         {
@@ -23,7 +27,7 @@ namespace WorkMate.Controllers
             DateTime endOfWeek = now.Date.AddDays(7);
             string userID = User.Identity.GetUserId();
 
-            List<Schedule> schedules = db.Schedules
+            List<Schedule> schedules = dbWorkMate.Schedules
                 .Include(s => s.Job)
                 .Where(s =>
                     s.UserID == userID
@@ -48,11 +52,11 @@ namespace WorkMate.Controllers
             return View(currentWeekSchedules);
         }
 
-        // GET: Schedule/Edit
+        [Route("Edit/{scheduleID}")]
         [HttpGet]
         public ActionResult Edit(int scheduleID)
         {
-            Schedule schedule = db.Schedules.Find(scheduleID);
+            Schedule schedule = dbWorkMate.Schedules.Find(scheduleID);
 
             if (schedule == null)
             {
@@ -74,7 +78,7 @@ namespace WorkMate.Controllers
                         Date = schedule.StartTime.ToString("yyyy-MM-dd"),
                         StartTime = schedule.StartTime.ToString("HH:mm"),
                         EndTime = schedule.EndTime.ToString("HH:mm"),
-                        Jobs = db.Jobs.Where(j => j.UserID == userID).ToList()
+                        Jobs = dbWorkMate.Jobs.Where(j => j.UserID == userID).ToList()
                     };
 
                     return View(scheduleFormVM);
@@ -82,14 +86,14 @@ namespace WorkMate.Controllers
             }
         }
 
-        // POST: Schedule/Edit
+        [Route("Edit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ScheduleFormViewModel scheduleFormVM)
         {
             if (ModelState.IsValid)
             {
-                Schedule existingSchedule = db.Schedules.Find(scheduleFormVM.Schedule.ID);
+                Schedule existingSchedule = dbWorkMate.Schedules.Find(scheduleFormVM.Schedule.ID);
 
                 if (existingSchedule == null)
                 {
@@ -105,7 +109,7 @@ namespace WorkMate.Controllers
                     existingSchedule.StartTime = Convert.ToDateTime(scheduleFormVM.Date + " " + scheduleFormVM.StartTime);
                     existingSchedule.EndTime = Convert.ToDateTime(scheduleFormVM.Date + " " + scheduleFormVM.EndTime);
 
-                    db.SaveChanges();
+                    dbWorkMate.SaveChanges();
 
                     return RedirectToAction("Index");
                 }
@@ -116,7 +120,7 @@ namespace WorkMate.Controllers
             }
         }
 
-        // GET: Schedule/New
+        [Route("New")]
         [HttpGet]
         public ViewResult New()
         {
@@ -124,13 +128,13 @@ namespace WorkMate.Controllers
 
             ScheduleFormViewModel scheduleFormVM = new ScheduleFormViewModel()
             {
-                Jobs = db.Jobs.Where(j => j.UserID == userID).ToList()
+                Jobs = dbWorkMate.Jobs.Where(j => j.UserID == userID).ToList()
             };
             
             return View(scheduleFormVM);
         }
 
-        // POST: Schedule/New
+        [Route("New")]
         [HttpPost]
         public ActionResult New(ScheduleFormViewModel scheduleFormVM)
         {
@@ -142,8 +146,8 @@ namespace WorkMate.Controllers
                 schedule.StartTime = Convert.ToDateTime(scheduleFormVM.Date + " " + scheduleFormVM.StartTime);
                 schedule.EndTime = Convert.ToDateTime(scheduleFormVM.Date + " " + scheduleFormVM.EndTime);
 
-                db.Schedules.Add(schedule);
-                db.SaveChanges();
+                dbWorkMate.Schedules.Add(schedule);
+                dbWorkMate.SaveChanges();
 
                 return RedirectToAction("Index");
             }
@@ -152,7 +156,5 @@ namespace WorkMate.Controllers
                 return View(scheduleFormVM);
             }
         }
-
-        private WorkMateDbContext db = new WorkMateDbContext();
     }
 }

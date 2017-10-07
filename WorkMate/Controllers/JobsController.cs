@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
-
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-
 using WorkMate.Models;
 using WorkMate.ViewModels;
 
 namespace WorkMate.Controllers
 {
+    [Route("Jobs")]
     [Authorize]
-    public class JobsController : Controller
+    public class JobsController : BaseController
     {
-        // GET: Jobs
+        public JobsController(WorkMateDbContext dbWorkMate)
+            : base(dbWorkMate)
+        {
+        }
+
+        [Route]
         [HttpGet]
         public ViewResult Index()
         {
@@ -24,17 +24,17 @@ namespace WorkMate.Controllers
             JobsViewModel jobsVM = new JobsViewModel()
             {
                 UserID = userID,
-                Jobs = db.Jobs.Where(j => j.User.Id == userID).ToList()
+                Jobs = dbWorkMate.Jobs.Where(j => j.User.Id == userID).ToList()
             };
             
             return View(jobsVM);
         }
 
-        // GET: Jobs/Edit
+        [Route("Edit/{jobID}")]
         [HttpGet]
         public ActionResult Edit(int jobID)
         {
-            Job job = db.Jobs.Find(jobID);
+            Job job = dbWorkMate.Jobs.Find(jobID);
 
             if (job == null)
             {
@@ -50,14 +50,14 @@ namespace WorkMate.Controllers
             }
         }
 
-        // POST: Jobs/Edit
+        [Route("Edit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Job job)
         {
             if (ModelState.IsValid)
             {
-                Job existingJob = db.Jobs.Find(job.ID);
+                Job existingJob = dbWorkMate.Jobs.Find(job.ID);
 
                 if (existingJob == null)
                 {
@@ -75,7 +75,7 @@ namespace WorkMate.Controllers
                     existingJob.PayRate = job.PayRate;
                     existingJob.PaymentSchedule = job.PaymentSchedule;
 
-                    db.SaveChanges();
+                    dbWorkMate.SaveChanges();
 
                     return RedirectToAction("Index");
                 }
@@ -86,7 +86,7 @@ namespace WorkMate.Controllers
             }
         }
 
-        // GET: Jobs/New
+        [Route("New")]
         [HttpGet]
         public ViewResult New()
         {
@@ -94,7 +94,7 @@ namespace WorkMate.Controllers
             return View(job);
         }
 
-        // POST: Jobs/New
+        [Route("New")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult New(Job job)
@@ -103,8 +103,8 @@ namespace WorkMate.Controllers
             {
                 job.UserID = User.Identity.GetUserId();
 
-                db.Jobs.Add(job);
-                db.SaveChanges();
+                dbWorkMate.Jobs.Add(job);
+                dbWorkMate.SaveChanges();
 
                 return RedirectToAction("Index");
             }
@@ -113,7 +113,5 @@ namespace WorkMate.Controllers
                 return View(job);
             }
         }
-
-        private WorkMateDbContext db = new WorkMateDbContext();
     }
 }

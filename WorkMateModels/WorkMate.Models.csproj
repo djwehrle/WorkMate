@@ -89,18 +89,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Role.cs" />
-    <Compile Include="Models\PaycheckDetail.cs" />
-    <Compile Include="Models\Job.cs" />
-    <Compile Include="Models\JobType.cs" />
-    <Compile Include="Models\Paycheck.cs" />
-    <Compile Include="Models\PayDate.cs" />
-    <Compile Include="Models\PaymentSchedule.cs" />
-    <Compile Include="Models\PayType.cs" />
+    <Compile Include="Role.cs" />
+    <Compile Include="PaycheckDetail.cs" />
+    <Compile Include="Job.cs" />
+    <Compile Include="JobType.cs" />
+    <Compile Include="Paycheck.cs" />
+    <Compile Include="PayDate.cs" />
+    <Compile Include="PaymentSchedule.cs" />
+    <Compile Include="PayType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\Schedule.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Models\Validations\Currency.cs" />
+    <Compile Include="Schedule.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="Validations\Currency.cs" />
     <Compile Include="WorkMateDbContext.cs" />
   </ItemGroup>
   <ItemGroup>

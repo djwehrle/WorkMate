@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
 using WorkMate.Models.Validations;
 
 namespace WorkMate.Models

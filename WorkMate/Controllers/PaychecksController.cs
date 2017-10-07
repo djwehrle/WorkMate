@@ -1,27 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-
 using Microsoft.AspNet.Identity;
-
 using WorkMate.ViewModels;
 using WorkMate.Models;
 
 namespace WorkMate.Controllers
 {
+    [RoutePrefix("Paychecks")]
     [Authorize]
-    public class PaychecksController : Controller
+    public class PaychecksController : BaseController
     {
-        // GET: Paychecks
+        public PaychecksController(WorkMateDbContext dbWorkMate)
+            : base(dbWorkMate)
+        {
+        }
+
+        [Route]
         [HttpGet]
         public ViewResult Index()
         {
             string userID = User.Identity.GetUserId();
 
-            List<Paycheck> paychecks = db.Paychecks
+            List<Paycheck> paychecks = dbWorkMate.Paychecks
                 .Include(p => p.PayDate)
                 .Include(p => p.Job)
                 .Where(p => p.UserID == userID)
@@ -30,11 +32,11 @@ namespace WorkMate.Controllers
             return View(paychecks);
         }
 
-        // GET: Paychecks/Paycheck
+        [Route("{paycheckID}")]
         [HttpGet]
         public ActionResult Paycheck(int paycheckID)
         {
-            Paycheck paycheck = db.Paychecks.Find(paycheckID);
+            Paycheck paycheck = dbWorkMate.Paychecks.Find(paycheckID);
 
             if (paycheck == null)
             {
@@ -46,7 +48,7 @@ namespace WorkMate.Controllers
             }
             else
             {
-                paycheck.PaycheckDetails = db.PaycheckDetails
+                paycheck.PaycheckDetails = dbWorkMate.PaycheckDetails
                     .Include(p => p.Paycheck)
                     .Include(p => p.Paycheck.Job)
                     .Include(p => p.Paycheck.PayDate)
@@ -62,7 +64,5 @@ namespace WorkMate.Controllers
                 return View(paycheckVM);
             }
         }
-
-        private WorkMateDbContext db = new WorkMateDbContext();
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
-
 using Microsoft.AspNet.Identity;
 using WorkMate.DTOs;
 using WorkMate.Mappers;
@@ -13,35 +12,12 @@ using WorkMate.Processes;
 namespace WorkMate.Controllers.API
 {
     [RoutePrefix("api/Paychecks")]
-    public class PaychecksController : ApiController
+    public class PaychecksController : BaseAPIController
     {
-        //[Route("Load")]
-        //[HttpGet]
-        //public IHttpActionResult Load()
-        //{
-        //    try
-        //    {
-        //        // Calculate Pay Dates
-        //        DateTime now = DateTime.Now;
-
-        //        PayDateCalculator payDateCalculator = new PayDateCalculator(now, now.AddMonths(1));
-        //        payDateCalculator.CalculatePayDates();
-
-        //        List<PayDate> payDates = db.PayDates.ToList();
-
-        //        foreach (PayDate payDate in payDates)
-        //        {
-        //            PaycheckCalculator paycheckCalculator = new PaycheckCalculator(payDate);
-        //            paycheckCalculator.CalculatePaycheck();
-        //        }
-
-        //        return Ok();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return InternalServerError(e);
-        //    }
-        //}
+        public PaychecksController(WorkMateDbContext dbWorkMate)
+            : base(dbWorkMate)
+        {
+        }
 
         [Route]
         [HttpGet]
@@ -55,17 +31,17 @@ namespace WorkMate.Controllers.API
                 PayDateCalculator payDateCalculator = new PayDateCalculator(now, now.AddMonths(1));
                 payDateCalculator.CalculatePayDates();
 
-                List<PayDate> payDates = db.PayDates.ToList();
+                List<PayDate> payDates = dbWorkMate.PayDates.ToList();
 
                 foreach (PayDate payDate in payDates)
                 {
-                    PaycheckCalculator paycheckCalculator = new PaycheckCalculator(payDate);
+                    PaycheckCalculator paycheckCalculator = new PaycheckCalculator(dbWorkMate, payDate);
                     paycheckCalculator.CalculatePaycheck();
                 }
 
                 string userID = User.Identity.GetUserId();
 
-                List<Paycheck> paychecks = db.Paychecks
+                List<Paycheck> paychecks = dbWorkMate.Paychecks
                     .Include(p => p.Job)
                     .Include(p => p.PayDate)
                     .Where(p => p.UserID == userID)
@@ -82,7 +58,5 @@ namespace WorkMate.Controllers.API
                 return InternalServerError(e);
             }
         }
-
-        private WorkMateDbContext db = new WorkMateDbContext();
     }
 }
